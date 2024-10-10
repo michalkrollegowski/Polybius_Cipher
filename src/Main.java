@@ -47,7 +47,8 @@ class PolybiusCipher {
                 for (int y = 0; y < array[0].length; y++) {
                     if (c == array[x][y]) {
                         int newX = (x + jump) % array.length;
-                        result.append(array[newX][y]);
+                        result.append(newX);
+                        result.append(y);
                         found = true;
                         break;
                     }
@@ -66,32 +67,33 @@ class PolybiusCipher {
 
     public String decrypt(char[][] array, String input, int jump, JTextArea decrypt_text) {
         StringBuilder result = new StringBuilder();
-
-        // Dzielenie input na tablicę znaków
-        char[] inputChars = input.toCharArray();
-
-        for (char c : inputChars) {
-            boolean found = false; // Flaga do sprawdzenia, czy znak został znaleziony
-            for (int x = 0; x < array.length; x++) {
-                for (int y = 0; y < array[0].length; y++) {
-                    if (c == array[x][y]) {
-                        // Dodajemy odpowiednie przesunięcie w przeciwnym kierunku
-                        int newX = (x - jump + array.length) % array.length;
-                        result.append(array[newX][y]);
-                        found = true; // Ustaw flagę na true, gdy znak został znaleziony
-                        break; // Przerwij pętlę po znalezieniu znaku
-                    }
-                }
-                if (found) break; // Przerwij zewnętrzną pętlę, jeśli znaleziono znak
+        // We assume the input string consists of pairs of digits representing coordinates (x, y)
+        for (int z = 0; z < input.length(); z += 2) {
+            // Ensure that we have a complete pair
+            if (z + 1 >= input.length()) {
+                JOptionPane.showMessageDialog(null, "Podano nie parzystą ilość cyfr", "Błąd", JOptionPane.ERROR_MESSAGE);
+                decrypt_text.setText(""); // Clear the text area
+                return ""; // Return empty result if there's an error
             }
-            if (!found) {
-                JOptionPane.showMessageDialog(null,"Podano jeden lub więcej znaków z poza słownika","Błąd",JOptionPane.ERROR_MESSAGE);
-                decrypt_text.setText(""); // Wyczyść pole tekstowe (np. w oknie GUI)
-                return ""; // Zwróć pusty wynik, jeśli wystąpił błąd
+
+            int x = Character.getNumericValue(input.charAt(z));     // X coordinate
+            int y = Character.getNumericValue(input.charAt(z + 1)); // Y coordinate
+
+            // Check if x and y are within valid range
+            if (x < 0 || x >= array.length || y < 0 || y >= array[0].length) {
+                JOptionPane.showMessageDialog(null, "Podano jeden lub więcej znaków z poza słownika", "Błąd", JOptionPane.ERROR_MESSAGE);
+                decrypt_text.setText(""); // Clear the text area
+                return ""; // Return empty result if there's an error
             }
+
+            // Calculate the original position
+            int originalX = (x - jump + array.length) % array.length;
+            result.append(array[originalX][y]); // Append the character from the array
         }
+
         return result.toString();
     }
+
 
 
 
