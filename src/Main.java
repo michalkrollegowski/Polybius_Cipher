@@ -8,7 +8,7 @@ class PolybiusCipher {
 
     public  char[] polishAlphabet =
             {
-            'A', 'Ą', 'B', 'C', 'Ć', 'D', 'E', 'Ę', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'Ł', 'M', 'N', 'Ń',
+                    'A', 'Ą', 'B', 'C', 'Ć', 'D', 'E', 'Ę', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'Ł', 'M', 'N', 'Ń',
                     'O', 'Ó', 'P', 'R', 'S', 'Ś', 'T', 'Q', 'U', 'V' , 'W', 'X', 'Y', 'Z', 'Ź', 'Ż',
             };
     public char[][] publicArray = new char[5][7];
@@ -87,7 +87,11 @@ class PolybiusCipher {
             }
 
             // Calculate the original position
-            int originalX = (x - jump + array.length) % array.length;
+            int originalX = (x - jump) % array.length;
+            if(originalX < 0)
+            {
+                originalX+=array.length;
+            }
             result.append(array[originalX][y]); // Append the character from the array
         }
 
